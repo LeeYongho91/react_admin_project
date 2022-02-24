@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 import { Payment } from '@/interfaces/user/payment.interface';
 
-export interface ReviewDocument extends Payment, mongoose.Document {
+export interface PaymentDocument extends Payment, mongoose.Document {
   createdAt: Date;
   updatedAt: Date;
 }
@@ -27,6 +27,6 @@ const paymentSchema = new mongoose.Schema(
   }
 );
 
-const Payment = mongoose.model('Payment', paymentSchema);
+const Payment = mongoose.model<PaymentDocument>('Payment', paymentSchema);
 
 export default Payment;

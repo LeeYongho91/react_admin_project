@@ -19,17 +19,29 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
+import ButtonGroup from '@mui/material/ButtonGroup';
 import { SHOP_SERVER } from '../../Config';
 import { loadingToggleAction } from '../../../_actions/util_actions';
 
 function Payment() {
-  const [StartValue, setStartValue] = useState(new Date());
+  const d = new Date();
+
+  const year = d.getFullYear(); // 년
+  const month = d.getMonth(); // 월
+  const day = d.getDate(); // 일
+
+  // 1년전 전 구하기
+  const newDate = new Date(year - 1, month, day);
+
+  const [StartValue, setStartValue] = useState(newDate);
   const [Endvalue, setEndvalue] = useState(new Date());
   const dispatch = useDispatch();
   const [payments, setPayments] = useState([]);
 
   const [type, setType] = useState('total');
   const [searchTerm, setSearchTerm] = useState('');
+
+  const [selectedBtn, setSelectedBtn] = useState(3);
 
   const handleChange = event => {
     setType(event.target.value);
@@ -57,20 +69,61 @@ function Payment() {
     setSearchTerm(e.target.value);
   };
 
-  const renderHistory = payments.map((/* History, idx */) => (
-    <TableRow
-      key={1}
-      sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-    >
-      <TableCell component="th" scope="row">
-        dd
-      </TableCell>
-      <TableCell align="right">dd</TableCell>
-      <TableCell align="right">dd</TableCell>
-      <TableCell align="right">dd</TableCell>
-      <TableCell align="right">dd</TableCell>
-    </TableRow>
-  ));
+  const groupButtonHandler = n => {
+    setSelectedBtn(n);
+    if (n === 1) {
+      const weekBeforeDate = new Date(year, month, day - 7);
+      setStartValue(weekBeforeDate);
+    } else if (n === 2) {
+      const thirtyBeforeDate = new Date(year, month, day - 30);
+      setStartValue(thirtyBeforeDate);
+    } else if (n === 3) {
+      const yearBeforeDate = new Date(year - 1, month, day);
+      setStartValue(yearBeforeDate);
+    }
+  };
+
+  const renderHistory = payments.map(payment =>
+    payment.product.map((item, idx) => (
+      <TableRow
+        key={idx}
+        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+      >
+        <TableCell component="th" scope="row">
+          {idx + 1}
+        </TableCell>
+        <TableCell align="right">{item.dateOfPurchase}</TableCell>
+        <TableCell align="right">{item.paymentId}</TableCell>
+        <TableCell align="right">{payment.user[0].name}</TableCell>
+        <TableCell align="right">{item.name}</TableCell>
+        <TableCell align="right">
+          {(item.price * item.quantity).toLocaleString()}
+        </TableCell>
+      </TableRow>
+    )),
+  );
+
+  // const test = () =>
+  //   payments.map(payment =>
+  //     payment.product.map((item, idx) => {
+  //       const user = payment.user[0].name;
+  //       return (
+  //         <TableRow
+  //           key={idx}
+  //           sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+  //         >
+  //           <TableCell component="th" scope="row">
+  //             {idx + 1}
+  //           </TableCell>
+  //           <TableCell align="right">{item.dateOfPurchase}</TableCell>
+  //           <TableCell align="right">{item.paymentId}</TableCell>
+  //           <TableCell align="right">{user}</TableCell>
+  //           <TableCell align="right">dd</TableCell>
+  //           <TableCell align="right">dd</TableCell>
+  //         </TableRow>
+  //       );
+  //     }),
+  //   );
 
   return (
     <div>
@@ -165,6 +218,32 @@ function Payment() {
                         )}
                       />
                     </LocalizationProvider>
+                    <ButtonGroup
+                      disableElevation
+                      variant="contained"
+                      color="primary"
+                      size="large"
+                      style={{ marginLeft: '20px' }}
+                    >
+                      <Button
+                        color={selectedBtn === 1 ? 'success' : 'primary'}
+                        onClick={() => groupButtonHandler(1)}
+                      >
+                        7일
+                      </Button>
+                      <Button
+                        color={selectedBtn === 2 ? 'success' : 'primary'}
+                        onClick={() => groupButtonHandler(2)}
+                      >
+                        30일
+                      </Button>
+                      <Button
+                        color={selectedBtn === 3 ? 'success' : 'primary'}
+                        onClick={() => groupButtonHandler(3)}
+                      >
+                        전체
+                      </Button>
+                    </ButtonGroup>
                   </TableCell>
                 </TableRow>
               </TableBody>

@@ -199,24 +199,19 @@ class ShopService {
     const startDate = searchData.startDate;
     const endDate = searchData.endDate;
     const findDateArgs = {};
-    findDateArgs['createAt'] = {
+    findDateArgs['createdAt'] = {
       $gte: new Date(startDate),
       $lte: new Date(endDate),
     };
 
-    console.log(findDateArgs);
-    console.log(findDateArgs);
-
     if (searchTerm) {
       let payments = [];
       if (type === 'total') {
-        payments = await this.Payment.find({ $or: [{ 'data.paymentID': searchTerm }, { 'user.name': searchTerm }] });
+        payments = await this.Payment.find({ $or: [{ 'data.paymentID': searchTerm }, { 'user.name': searchTerm }], ...findDateArgs });
       } else if (type === 'paymentId') {
         payments = await this.Payment.find({ 'data.paymentID': searchTerm, ...findDateArgs });
       } else if (type === 'name') {
-        payments = await this.Payment.find({
-          createAt: { $gte: '2021-01-01', $lte: '2021-12-30' },
-        });
+        payments = await this.Payment.find(findDateArgs);
       }
       return { success: true, payments };
     } else {
