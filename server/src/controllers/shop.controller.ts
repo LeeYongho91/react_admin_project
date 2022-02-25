@@ -98,7 +98,22 @@ class ShopController {
   public history = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const result = await this.shopService.history(req.body);
-      if (result['success']) res.json({ success: true, payments: result['payments'] });
+      if (result['success']) res.json({ success: true, payments: result['payments'], historyCount: result['historyCount'] });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  /**
+   *
+   * @param req
+   * @param res
+   * @param next
+   */
+  public getProductList = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const result = await this.shopService.getProductList(req.body);
+      if (result['success']) res.json({ success: true, ...result });
     } catch (error) {
       next(error);
     }

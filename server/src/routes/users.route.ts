@@ -17,6 +17,7 @@ class UsersRoute implements Route {
     this.router.get(`${this.path}/cart/get`, this.usersController.getCart);
     this.router.get(`${this.path}/cart/remove`, authMiddleware, this.usersController.removeCart);
     this.router.post(`${this.path}/successBuy`, authMiddleware, this.usersController.successBuy);
+    this.router.post(`${this.path}/list`, this.usersController.getList);
   }
 }
 

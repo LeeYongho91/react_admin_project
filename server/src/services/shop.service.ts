@@ -150,8 +150,6 @@ class ShopService {
       },
     });
 
-    console.log(review);
-
     const reviewCount = await this.reviewCount(req.body.productId);
     return { success: true, review, reviewCount };
   }
@@ -198,6 +196,8 @@ class ShopService {
     const searchTerm = searchData.searchTerm;
     const startDate = searchData.startDate;
     const endDate = searchData.endDate;
+    const skip = searchData.skip;
+    const limit = searchData.limit;
     const findDateArgs = {};
     findDateArgs['createdAt'] = {
       $gte: new Date(startDate),
@@ -206,18 +206,70 @@ class ShopService {
 
     if (searchTerm) {
       let payments = [];
+      let historyCount = 0;
       if (type === 'total') {
-        payments = await this.Payment.find({ $or: [{ 'data.paymentID': searchTerm }, { 'user.name': searchTerm }], ...findDateArgs });
+        historyCount = await this.Payment.count({ $or: [{ 'data.paymentID': searchTerm }, { 'user.name': searchTerm }], ...findDateArgs });
+        payments = await this.Payment.find({ $or: [{ 'data.paymentID': searchTerm }, { 'user.name': searchTerm }], ...findDateArgs })
+          .skip(skip)
+          .limit(limit);
       } else if (type === 'paymentId') {
-        payments = await this.Payment.find({ 'data.paymentID': searchTerm, ...findDateArgs });
+        historyCount = await this.Payment.count({ 'data.paymentID': searchTerm, ...findDateArgs });
+        payments = await this.Payment.find({ 'data.paymentID': searchTerm, ...findDateArgs })
+          .skip(skip)
+          .limit(limit);
       } else if (type === 'name') {
-        payments = await this.Payment.find(findDateArgs);
+        historyCount = await this.Payment.count({ 'user.name': searchTerm, ...findDateArgs });
+        payments = await this.Payment.find({ 'user.name': searchTerm, ...findDateArgs })
+          .skip(skip)
+          .limit(limit);
       }
-      return { success: true, payments };
+      return { success: true, payments, historyCount };
     } else {
-      const payments = await this.Payment.find(findDateArgs);
-      console.log(payments);
-      return { success: true, payments };
+      const historyCount = await this.Payment.count(findDateArgs);
+      const payments = await this.Payment.find(findDateArgs).skip(skip).limit(limit);
+      return { success: true, payments, historyCount };
+    }
+  }
+
+  /**
+   *
+   * @param searchData
+   * @returns
+   */
+  public async getProductList(searchData): Promise<object> {
+    if (isEmpty(searchData)) throw new HttpException(400, "You're not searchData");
+
+    const type = searchData.type;
+    const searchTerm = searchData.searchTerm;
+    const startDate = searchData.startDate;
+    const endDate = searchData.endDate;
+    const skip = searchData.skip;
+    const limit = searchData.limit;
+    const findDateArgs = {};
+    findDateArgs['createdAt'] = {
+      $gte: new Date(startDate),
+      $lte: new Date(endDate),
+    };
+
+    if (searchTerm) {
+      let products = [];
+      let productCount = 0;
+      if (type === 'total') {
+        productCount = await this.Product.count({ title: new RegExp(searchTerm, 'i'), ...findDateArgs });
+        products = await this.Product.find({ title: new RegExp(searchTerm, 'i'), ...findDateArgs })
+          .skip(skip)
+          .limit(limit);
+      } else if (type === 'title') {
+        productCount = await this.Product.count({ title: searchTerm, ...findDateArgs });
+        products = await this.Product.find({ title: searchTerm, ...findDateArgs })
+          .skip(skip)
+          .limit(limit);
+      }
+      return { success: true, products, productCount };
+    } else {
+      const productCount = await this.Product.count(findDateArgs);
+      const products = await this.Product.find(findDateArgs).skip(skip).limit(limit);
+      return { success: true, products, productCount };
     }
   }
 }

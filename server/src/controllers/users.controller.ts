@@ -65,6 +65,21 @@ class UsersController {
       next(error);
     }
   };
+
+  /**
+   *
+   * @param req
+   * @param res
+   * @param next
+   */
+  public getList = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const result = await this.userService.getList(req.body);
+      if (result['success']) res.status(200).json({ success: true, ...result });
+    } catch (error) {
+      next(error);
+    }
+  };
 }
 
 export default UsersController;

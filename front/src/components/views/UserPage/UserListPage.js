@@ -14,16 +14,17 @@ import DatePicker from '@mui/lab/DatePicker';
 import Button from '@mui/material/Button';
 import TableHead from '@mui/material/TableHead';
 import Select from '@mui/material/Select';
-// import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import ButtonGroup from '@mui/material/ButtonGroup';
-import { SHOP_SERVER } from '../../Config';
+import { USER_SERVER } from '../../Config';
 import { loadingToggleAction } from '../../../_actions/util_actions';
+import Pagination from '../../utils/Pagination/Pagination';
+import { DateFormat } from '../../utils/DateFormat';
 
-function Payment() {
+function UserListPage() {
   const d = new Date();
 
   const year = d.getFullYear(); // 년
@@ -36,29 +37,38 @@ function Payment() {
   const [StartValue, setStartValue] = useState(newDate);
   const [Endvalue, setEndvalue] = useState(new Date());
   const dispatch = useDispatch();
-  const [payments, setPayments] = useState([]);
+  const [users, setUsers] = useState([]);
 
   const [type, setType] = useState('total');
   const [searchTerm, setSearchTerm] = useState('');
 
   const [selectedBtn, setSelectedBtn] = useState(3);
+  const [page, setPage] = useState(1);
+  const [skip, setSkip] = useState(0);
+  const [limit] = useState(5);
+  const [count, setCount] = useState(0);
 
   const handleChange = event => {
     setType(event.target.value);
   };
 
-  const search = async () => {
+  const search = async (Skip = skip) => {
     try {
       dispatch(loadingToggleAction(true));
+      if (isNaN(Skip)) Skip = 0;
       const body = {
         type,
         searchTerm,
         startDate: StartValue,
         endDate: Endvalue,
+        skip: Skip,
+        limit,
       };
-      const { data } = await axios.post(`${SHOP_SERVER}/history`, body);
+
+      const { data } = await axios.post(`${USER_SERVER}/list`, body);
       console.log(data);
-      setPayments(data.payments);
+      setUsers(data.users);
+      setCount(data.userCount);
       dispatch(loadingToggleAction(false));
     } catch (error) {
       console.log(error.response.data.error);
@@ -83,55 +93,34 @@ function Payment() {
     }
   };
 
-  const renderHistory = payments.map(payment =>
-    payment.product.map((item, idx) => (
-      <TableRow
-        key={idx}
-        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-      >
-        <TableCell component="th" scope="row">
-          {idx + 1}
-        </TableCell>
-        <TableCell align="right">{item.dateOfPurchase}</TableCell>
-        <TableCell align="right">{item.paymentId}</TableCell>
-        <TableCell align="right">{payment.user[0].name}</TableCell>
-        <TableCell align="right">{item.name}</TableCell>
-        <TableCell align="right">
-          {(item.price * item.quantity).toLocaleString()}
-        </TableCell>
-      </TableRow>
-    )),
-  );
+  const renderHistory = users.map((user, idx) => (
+    <TableRow
+      key={idx}
+      sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+    >
+      <TableCell component="th" scope="row">
+        {idx + 1}
+      </TableCell>
+      <TableCell align="left">{user.name}</TableCell>
+      <TableCell align="left">{user.email}</TableCell>
+      <TableCell align="left">{user.userType}</TableCell>
+      <TableCell align="left">{DateFormat(user.createdAt)}</TableCell>
+    </TableRow>
+  ));
 
-  // const test = () =>
-  //   payments.map(payment =>
-  //     payment.product.map((item, idx) => {
-  //       const user = payment.user[0].name;
-  //       return (
-  //         <TableRow
-  //           key={idx}
-  //           sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-  //         >
-  //           <TableCell component="th" scope="row">
-  //             {idx + 1}
-  //           </TableCell>
-  //           <TableCell align="right">{item.dateOfPurchase}</TableCell>
-  //           <TableCell align="right">{item.paymentId}</TableCell>
-  //           <TableCell align="right">{user}</TableCell>
-  //           <TableCell align="right">dd</TableCell>
-  //           <TableCell align="right">dd</TableCell>
-  //         </TableRow>
-  //       );
-  //     }),
-  //   );
+  const handlePageChange = pageValue => {
+    setPage(pageValue);
+    setSkip((pageValue - 1) * limit);
+    search((pageValue - 1) * limit);
+  };
 
   return (
     <div>
       <Box>
-        <h4>주문조회</h4>
+        <h4>유저리스트</h4>
         <Divider />
         <Paper sx={{ padding: 3 }}>
-          <div>주문검색</div>
+          <div>유저검색</div>
           <TableContainer component={Paper} sx={{ marginTop: 2 }}>
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
               <TableBody>
@@ -156,8 +145,8 @@ function Payment() {
                         inputProps={{ 'aria-label': 'Without label' }}
                       >
                         <MenuItem value="total">=통합검색=</MenuItem>
-                        <MenuItem value="name">주문자</MenuItem>
-                        <MenuItem value="paymentId">주문번호</MenuItem>
+                        <MenuItem value="name">이름</MenuItem>
+                        <MenuItem value="email">이메일</MenuItem>
                       </Select>
                     </FormControl>
                     <TextField
@@ -241,7 +230,7 @@ function Payment() {
                         color={selectedBtn === 3 ? 'success' : 'primary'}
                         onClick={() => groupButtonHandler(3)}
                       >
-                        전체
+                        1년
                       </Button>
                     </ButtonGroup>
                   </TableCell>
@@ -263,21 +252,28 @@ function Payment() {
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
               <TableHead style={{ backgroundColor: '#bbb' }}>
                 <TableRow>
-                  <TableCell>번호</TableCell>
-                  <TableCell align="right">주문일시</TableCell>
-                  <TableCell align="right">주문번호</TableCell>
-                  <TableCell align="right">주문자</TableCell>
-                  <TableCell align="right">주문상품</TableCell>
-                  <TableCell align="right">총 상품금액</TableCell>
+                  <TableCell align="left">번호</TableCell>
+                  <TableCell align="left">이름</TableCell>
+                  <TableCell align="left">이메일</TableCell>
+                  <TableCell align="left">타입</TableCell>
+                  <TableCell align="left">가입날짜</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>{renderHistory}</TableBody>
             </Table>
           </TableContainer>
+          {count !== 0 && (
+            <Pagination
+              handlePageChange={handlePageChange}
+              count={count}
+              limit={limit}
+              pageOneRefrech={page}
+            />
+          )}
         </Paper>
       </Box>
     </div>
   );
 }
 
-export default Payment;
+export default UserListPage;

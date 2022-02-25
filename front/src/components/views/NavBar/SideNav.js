@@ -85,7 +85,10 @@ function MainListItems() {
             <ListItemIcon>
               <MoreHorizIcon />
             </ListItemIcon>
-            <ListItemText primary="유저리스트" />
+            <ListItemText
+              primary="유저리스트"
+              onClick={() => moveRouter('/user/list')}
+            />
           </ListItem>
         </List>
         <List component="div" disablePadding>
@@ -110,7 +113,10 @@ function MainListItems() {
             <ListItemIcon>
               <MoreHorizIcon />
             </ListItemIcon>
-            <ListItemText primary="상품리스트" />
+            <ListItemText
+              primary="상품리스트"
+              onClick={() => moveRouter('/product/list')}
+            />
           </ListItem>
         </List>
         <List component="div" disablePadding>

@@ -3,7 +3,9 @@ import { Route, Routes } from 'react-router-dom';
 import React, { Suspense } from 'react';
 import Container from './views/Container/Container';
 import Dashboard from './views/DashBoard/DashBoard';
-import Payment from './views/Payment/Payment';
+import Payment from './views/PaymentPage/Payment';
+import UserListPage from './views/UserPage/UserListPage';
+import ProductListPage from './views/ProductPage/ProductListPage';
 
 function App() {
   // null   Anyone Can go inside
@@ -17,6 +19,8 @@ function App() {
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/payment" element={<Payment />} />
+            <Route path="/user/list" element={<UserListPage />} />
+            <Route path="/product/list" element={<ProductListPage />} />
           </Routes>
         </Container>
       </Suspense>
