@@ -17,7 +17,6 @@ class AuthService {
 
     const findUser: UserInput = await this.User.findOne({ email: data.email });
     if (findUser) throw new HttpException(409, `You're email ${data.email} already exists`);
-
     const user = new this.User(data);
     const result = await user.save();
     if (!result) return false;

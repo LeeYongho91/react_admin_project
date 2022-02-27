@@ -99,7 +99,7 @@ function UserListPage() {
       sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
     >
       <TableCell component="th" scope="row">
-        {idx + 1}
+        {skip + idx + 1}
       </TableCell>
       <TableCell align="left">{user.name}</TableCell>
       <TableCell align="left">{user.email}</TableCell>

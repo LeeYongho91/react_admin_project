@@ -101,7 +101,7 @@ function Payment() {
           sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
         >
           <TableCell component="th" scope="row">
-            {newCount}
+            {skip + newCount}
           </TableCell>
           <TableCell align="left">{DateFormat(item.dateOfPurchase)}</TableCell>
           <TableCell align="left">{item.paymentId}</TableCell>
