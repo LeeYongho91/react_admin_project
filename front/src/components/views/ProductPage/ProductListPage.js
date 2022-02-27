@@ -101,8 +101,16 @@ function ProductListPage() {
       <TableCell component="th" scope="row">
         {idx + 1}
       </TableCell>
+      <TableCell align="left">
+        {' '}
+        <img
+          src={`${process.env.REACT_APP_API_URL}/${product.images[0]}`}
+          alt={product.title}
+          style={{ width: '50px' }}
+        />
+      </TableCell>
       <TableCell align="left">{product.title}</TableCell>
-      <TableCell align="left">{product.price}</TableCell>
+      <TableCell align="left">{product.price.toLocaleString()}</TableCell>
       <TableCell align="left">{product.sold}</TableCell>
       <TableCell align="left">{DateFormat(product.createdAt)}</TableCell>
     </TableRow>
@@ -252,6 +260,7 @@ function ProductListPage() {
               <TableHead style={{ backgroundColor: '#bbb' }}>
                 <TableRow>
                   <TableCell align="left">번호</TableCell>
+                  <TableCell align="left">이미지</TableCell>
                   <TableCell align="left">이름</TableCell>
                   <TableCell align="left">가격</TableCell>
                   <TableCell align="left">판매수</TableCell>

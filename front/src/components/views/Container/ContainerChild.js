@@ -9,13 +9,16 @@ import List from '@mui/material/List';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
-import Badge from '@mui/material/Badge';
 import Container from '@mui/material/Container';
-import Link from '@mui/material/Link';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import NotificationsIcon from '@mui/icons-material/Notifications';
+import { Link, useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import axios from 'axios';
 import SideNav from '../NavBar/SideNav';
+import { loadingToggleAction } from '../../../_actions/util_actions';
+import { AUTH_SERVER } from '../../Config';
 
 function Copyright(props) {
   return (
@@ -26,10 +29,7 @@ function Copyright(props) {
       {...props}
     >
       {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}.
+      <Link to="/">Your Website</Link> {new Date().getFullYear()}.
     </Typography>
   );
 }
@@ -84,9 +84,27 @@ const mdTheme = createTheme();
 
 function ContainerChild({ children }) {
   const [open, setOpen] = useState(true);
+  const user = useSelector(state => state.user);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const toggleDrawer = () => {
     setOpen(!open);
+  };
+
+  const logout = async e => {
+    e.preventDefault();
+    try {
+      dispatch(loadingToggleAction(true));
+      const res = await axios.get(`${AUTH_SERVER}/logout`);
+      if (res.status === 200) {
+        dispatch(loadingToggleAction(false));
+        dispatch({ type: 'clear_cart_clear' });
+        navigate('/login');
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
   return (
     <ThemeProvider theme={mdTheme}>
@@ -116,13 +134,30 @@ function ContainerChild({ children }) {
               color="inherit"
               noWrap
               sx={{ flexGrow: 1 }}
+              onClick={() => navigate('/')}
             >
-              Dashboard
+              <span style={{ cursor: 'pointer' }}>Dashboard</span>
             </Typography>
-            <IconButton color="inherit">
-              <Badge badgeContent={4} color="secondary">
-                <NotificationsIcon />
-              </Badge>
+            <IconButton color="inherit" size="small">
+              {user.userData && !user.userData.isAuth ? (
+                <div onClick={() => navigate('/login')}>
+                  {' '}
+                  <FontAwesomeIcon
+                    icon={['far', 'user']}
+                    style={{ marginRight: '5px' }}
+                  />
+                  로그인
+                </div>
+              ) : (
+                <div onClick={logout}>
+                  {' '}
+                  <FontAwesomeIcon
+                    icon="sign-out-alt"
+                    style={{ marginRight: '5px' }}
+                  />
+                  로그아웃
+                </div>
+              )}
             </IconButton>
           </Toolbar>
         </AppBar>
@@ -135,7 +170,12 @@ function ContainerChild({ children }) {
               px: [1],
             }}
           >
-            Admin
+            {user.userData && !user.userData.isAuth ? (
+              <></>
+            ) : (
+              <>{user.userData && user.userData.name}</>
+            )}
+
             <IconButton onClick={toggleDrawer}>
               <ChevronLeftIcon />
             </IconButton>

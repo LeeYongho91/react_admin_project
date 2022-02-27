@@ -208,18 +208,18 @@ class ShopService {
       let payments = [];
       let historyCount = 0;
       if (type === 'total') {
-        historyCount = await this.Payment.count({ $or: [{ 'data.paymentID': searchTerm }, { 'user.name': searchTerm }], ...findDateArgs });
-        payments = await this.Payment.find({ $or: [{ 'data.paymentID': searchTerm }, { 'user.name': searchTerm }], ...findDateArgs })
+        historyCount = await this.Payment.count({ $or: [{ 'data.paymentID': new RegExp(searchTerm, 'i') }, { 'user.name': new RegExp(searchTerm, 'i') }], ...findDateArgs });
+        payments = await this.Payment.find({ $or: [{ 'data.paymentID': new RegExp(searchTerm, 'i') }, { 'user.name': new RegExp(searchTerm, 'i') }], ...findDateArgs })
           .skip(skip)
           .limit(limit);
       } else if (type === 'paymentId') {
-        historyCount = await this.Payment.count({ 'data.paymentID': searchTerm, ...findDateArgs });
-        payments = await this.Payment.find({ 'data.paymentID': searchTerm, ...findDateArgs })
+        historyCount = await this.Payment.count({ 'data.paymentID': new RegExp(searchTerm, 'i'), ...findDateArgs });
+        payments = await this.Payment.find({ 'data.paymentID': new RegExp(searchTerm, 'i'), ...findDateArgs })
           .skip(skip)
           .limit(limit);
       } else if (type === 'name') {
-        historyCount = await this.Payment.count({ 'user.name': searchTerm, ...findDateArgs });
-        payments = await this.Payment.find({ 'user.name': searchTerm, ...findDateArgs })
+        historyCount = await this.Payment.count({ 'user.name': new RegExp(searchTerm, 'i'), ...findDateArgs });
+        payments = await this.Payment.find({ 'user.name': new RegExp(searchTerm, 'i'), ...findDateArgs })
           .skip(skip)
           .limit(limit);
       }
@@ -260,8 +260,8 @@ class ShopService {
           .skip(skip)
           .limit(limit);
       } else if (type === 'title') {
-        productCount = await this.Product.count({ title: searchTerm, ...findDateArgs });
-        products = await this.Product.find({ title: searchTerm, ...findDateArgs })
+        productCount = await this.Product.count({ title: new RegExp(searchTerm, 'i'), ...findDateArgs });
+        products = await this.Product.find({ title: new RegExp(searchTerm, 'i'), ...findDateArgs })
           .skip(skip)
           .limit(limit);
       }

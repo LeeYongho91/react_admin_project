@@ -96,7 +96,10 @@ function MainListItems() {
             <ListItemIcon>
               <MoreHorizIcon />
             </ListItemIcon>
-            <ListItemText primary="유저등록" />
+            <ListItemText
+              primary="유저등록"
+              onClick={() => moveRouter('/user/register')}
+            />
           </ListItem>
         </List>
       </Collapse>
@@ -124,7 +127,10 @@ function MainListItems() {
             <ListItemIcon>
               <MoreHorizIcon />
             </ListItemIcon>
-            <ListItemText primary="상품등록" />
+            <ListItemText
+              primary="상품등록"
+              onClick={() => moveRouter('/product/register')}
+            />
           </ListItem>
         </List>
       </Collapse>

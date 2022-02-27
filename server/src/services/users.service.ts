@@ -192,18 +192,18 @@ class UserService {
       let users = [];
       let userCount = 0;
       if (type === 'total') {
-        userCount = await this.User.count({ $or: [{ email: searchTerm }, { name: searchTerm }], ...findDateArgs });
-        users = await this.User.find({ $or: [{ email: searchTerm }, { name: searchTerm }], ...findDateArgs })
+        userCount = await this.User.count({ $or: [{ email: new RegExp(searchTerm, 'i') }, { name: new RegExp(searchTerm, 'i') }], ...findDateArgs });
+        users = await this.User.find({ $or: [{ email: new RegExp(searchTerm, 'i') }, { name: new RegExp(searchTerm, 'i') }], ...findDateArgs })
           .skip(skip)
           .limit(limit);
       } else if (type === 'email') {
-        userCount = await this.User.count({ email: searchTerm, ...findDateArgs });
-        users = await this.User.find({ email: searchTerm, ...findDateArgs })
+        userCount = await this.User.count({ email: new RegExp(searchTerm, 'i'), ...findDateArgs });
+        users = await this.User.find({ email: new RegExp(searchTerm, 'i'), ...findDateArgs })
           .skip(skip)
           .limit(limit);
       } else if (type === 'name') {
-        userCount = await this.User.count({ name: searchTerm, ...findDateArgs });
-        users = await this.User.find({ name: searchTerm, ...findDateArgs })
+        userCount = await this.User.count({ name: new RegExp(searchTerm, 'i'), ...findDateArgs });
+        users = await this.User.find({ name: new RegExp(searchTerm, 'i'), ...findDateArgs })
           .skip(skip)
           .limit(limit);
       }
