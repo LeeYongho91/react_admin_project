@@ -19,6 +19,9 @@ class AuthRoute implements Route {
     // 회원가입
     this.router.post(`${this.path}/signup`, validationMiddleware(CreateUserDto, 'body'), this.authController.signUp);
 
+    // 운영자 등록
+    this.router.post(`${this.path}/admin/register`, validationMiddleware(CreateUserDto, 'body'), this.authController.adminRegister);
+
     // 일반 로그인
     this.router.post(`${this.path}/login`, validationMiddleware(LoginUserDto, 'body'), this.authController.login);
 

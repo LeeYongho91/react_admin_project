@@ -147,7 +147,10 @@ function MainListItems() {
             <ListItemIcon>
               <MoreHorizIcon />
             </ListItemIcon>
-            <ListItemText primary="운영관리" />
+            <ListItemText
+              primary="운영자리스트"
+              onClick={() => moveRouter('/admin/list')}
+            />
           </ListItem>
         </List>
         <List component="div" disablePadding>
@@ -155,7 +158,10 @@ function MainListItems() {
             <ListItemIcon>
               <MoreHorizIcon />
             </ListItemIcon>
-            <ListItemText primary="운영자관리" />
+            <ListItemText
+              primary="운영자등록"
+              onClick={() => moveRouter('/admin/register')}
+            />
           </ListItem>
         </List>
       </Collapse>

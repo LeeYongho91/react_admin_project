@@ -138,27 +138,28 @@ function ContainerChild({ children }) {
             >
               <span style={{ cursor: 'pointer' }}>Dashboard</span>
             </Typography>
-            <IconButton color="inherit" size="small">
-              {user.userData && !user.userData.isAuth ? (
-                <div onClick={() => navigate('/login')}>
-                  {' '}
-                  <FontAwesomeIcon
-                    icon={['far', 'user']}
-                    style={{ marginRight: '5px' }}
-                  />
-                  로그인
-                </div>
-              ) : (
-                <div onClick={logout}>
-                  {' '}
-                  <FontAwesomeIcon
-                    icon="sign-out-alt"
-                    style={{ marginRight: '5px' }}
-                  />
-                  로그아웃
-                </div>
-              )}
-            </IconButton>
+
+            {user.userData && !user.userData.isAuth ? (
+              <IconButton
+                color="inherit"
+                size="small"
+                onClick={() => navigate('/login')}
+              >
+                <FontAwesomeIcon
+                  icon={['far', 'user']}
+                  style={{ marginRight: '5px' }}
+                />
+                로그인
+              </IconButton>
+            ) : (
+              <IconButton color="inherit" size="small" onClick={logout}>
+                <FontAwesomeIcon
+                  icon="sign-out-alt"
+                  style={{ marginRight: '5px' }}
+                />
+                로그아웃
+              </IconButton>
+            )}
           </Toolbar>
         </AppBar>
         <Drawer variant="permanent" open={open}>

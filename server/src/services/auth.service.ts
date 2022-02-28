@@ -29,6 +29,27 @@ class AuthService {
    * @param userData
    * @returns
    */
+  public async adminRegister(data: CreateUserDto): Promise<boolean> {
+    if (isEmpty(data)) throw new HttpException(400, "You're not userData");
+
+    const findUser: UserInput = await this.User.findOne({ email: data.email });
+    if (findUser) throw new HttpException(409, `You're email ${data.email} already exists`);
+    const newData = {
+      ...data,
+      role: 1,
+    };
+    const user = new this.User(newData);
+    const result = await user.save();
+    if (!result) return false;
+
+    return true;
+  }
+
+  /**
+   *
+   * @param userData
+   * @returns
+   */
   public async login(loginData: LoginUserDto): Promise<object> {
     if (isEmpty(loginData)) throw new HttpException(400, "You're not userData");
 

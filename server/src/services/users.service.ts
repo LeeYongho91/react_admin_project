@@ -215,6 +215,56 @@ class UserService {
       return { success: true, users, userCount };
     }
   }
+
+  /**
+   *
+   * @param searchData
+   * @returns
+   */
+  public async getAdminList(searchData): Promise<object> {
+    if (isEmpty(searchData)) throw new HttpException(400, "You're not searchData");
+
+    const type = searchData.type;
+    const searchTerm = searchData.searchTerm;
+    const startDate = searchData.startDate;
+    const endDate = searchData.endDate;
+    const skip = searchData.skip;
+    const limit = searchData.limit;
+    const findDateArgs = {};
+    findDateArgs['createdAt'] = {
+      $gte: new Date(startDate),
+      $lte: new Date(endDate),
+    };
+
+    if (searchTerm) {
+      let users = [];
+      let userCount = 0;
+      if (type === 'total') {
+        userCount = await this.User.count({ $or: [{ email: new RegExp(searchTerm, 'i') }, { name: new RegExp(searchTerm, 'i') }], ...findDateArgs, role: 1 });
+        users = await this.User.find({ $or: [{ email: new RegExp(searchTerm, 'i') }, { name: new RegExp(searchTerm, 'i') }], ...findDateArgs, role: 1 })
+          .skip(skip)
+          .limit(limit);
+      } else if (type === 'email') {
+        userCount = await this.User.count({ email: new RegExp(searchTerm, 'i'), ...findDateArgs, role: 1 });
+        users = await this.User.find({ email: new RegExp(searchTerm, 'i'), ...findDateArgs, role: 1 })
+          .skip(skip)
+          .limit(limit);
+      } else if (type === 'name') {
+        userCount = await this.User.count({ name: new RegExp(searchTerm, 'i'), ...findDateArgs, role: 1 });
+        users = await this.User.find({ name: new RegExp(searchTerm, 'i'), ...findDateArgs, role: 1 })
+          .skip(skip)
+          .limit(limit);
+      }
+      console.log(users);
+      return { success: true, users, userCount };
+    } else {
+      const userCount = await this.User.count({ role: 1, ...findDateArgs });
+      const users = await this.User.find({ role: 1, ...findDateArgs })
+        .skip(skip)
+        .limit(limit);
+      return { success: true, users, userCount };
+    }
+  }
 }
 
 export default UserService;

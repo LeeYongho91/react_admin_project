@@ -4,6 +4,8 @@ export default function (state = {}, action) {
   switch (action.type) {
     case types.REGISTER_USER:
       return { ...state, register: action.payload };
+    case types.REGISTER_ADMIN:
+      return { ...state, register: action.payload };
     case types.LOGIN_USER:
       return { ...state, loginSucces: action.payload };
     case types.AUTH_USER:

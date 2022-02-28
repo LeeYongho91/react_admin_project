@@ -1,5 +1,6 @@
 const LOGIN_USER = 'login_user';
 const REGISTER_USER = 'register_user';
+const REGISTER_ADMIN = 'register_admin';
 const AUTH_USER = 'auth_user';
 const LOADING_TOGGLE_ACTION = 'loading_toggle_action';
 const PRODUCT_IMAGES_ACTION = 'product_images_action';
@@ -28,4 +29,5 @@ export default {
   CLEAR_CART_CLEAR,
   SHOW_ALERT_DIALOG,
   CLOSE_ALERT_DIALOG,
+  REGISTER_ADMIN,
 };

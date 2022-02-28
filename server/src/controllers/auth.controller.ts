@@ -30,6 +30,22 @@ class AuthController {
    * @param res
    * @param next
    */
+  public adminRegister = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const data = req.body;
+      const result = await this.authService.adminRegister(data);
+      res.status(201).json({ success: result });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  /**
+   *
+   * @param req
+   * @param res
+   * @param next
+   */
   public login = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const loginData: LoginUserDto = req.body;

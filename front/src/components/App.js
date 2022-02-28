@@ -9,6 +9,8 @@ import ProductListPage from './views/ProductPage/ProductListPage';
 import ProductRegisterPage from './views/ProductPage/ProductRegisterPage';
 import UserRegisterPage from './views/UserPage/UserRegisterPage';
 import LoginPage from './views/LoginPage/LoginPage';
+import AdminListPage from './views/AdminPage/AdminListPage';
+import AdminRegisterPage from './views/AdminPage/AdminRegisterPage';
 import Auth from '../hoc/auth';
 
 import './utils/fontawesome';
@@ -25,6 +27,8 @@ function App() {
   const AuthUserRegisterPage = Auth(UserRegisterPage, true);
   const AuthProductListPage = Auth(ProductListPage, true);
   const AuthProductRegisterPage = Auth(ProductRegisterPage, true);
+  const AuthAdminListPage = Auth(AdminListPage, true);
+  const AuthAdminRegisterPage = Auth(AdminRegisterPage, true);
 
   return (
     <>
@@ -41,6 +45,8 @@ function App() {
               element={<AuthProductRegisterPage />}
             />
             <Route path="/login" element={<AuthLoginPage />} />
+            <Route path="/admin/list" element={<AuthAdminListPage />} />
+            <Route path="/admin/register" element={<AuthAdminRegisterPage />} />
           </Routes>
         </Container>
       </Suspense>

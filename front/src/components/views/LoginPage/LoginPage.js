@@ -59,6 +59,11 @@ function LoginPage() {
       console.log(formErrorMessage);
     }
   };
+  const handleKeyDown = event => {
+    if (event.key === 'Enter') {
+      handleSubmit(onSubmit);
+    }
+  };
 
   return (
     <div>
@@ -70,7 +75,6 @@ function LoginPage() {
             <div>
               <TextField
                 required
-                id="email"
                 name="email"
                 label="Email"
                 className="login-email"
@@ -95,7 +99,6 @@ function LoginPage() {
             <div>
               <TextField
                 required
-                id="password"
                 name="password"
                 label="Password"
                 className="login-password"
@@ -116,6 +119,7 @@ function LoginPage() {
                 // onChange={handleChange}
                 placeholder="Enter your password"
                 type="password"
+                onKeyDown={handleKeyDown}
               />
             </div>
 
@@ -124,7 +128,7 @@ function LoginPage() {
               disabled={!isValid}
               variant="contained"
               size="large"
-              onClick={handleSubmit(onSubmit)}
+              type="submit"
             >
               로그인
             </Button>

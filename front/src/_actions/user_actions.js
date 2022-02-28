@@ -18,6 +18,17 @@ export function registerUser(dataToSubmit) {
   };
 }
 
+export function registerAdmin(dataToSubmit) {
+  const request = axios
+    .post(`${AUTH_SERVER}/admin/register`, dataToSubmit)
+    .then(response => response.data);
+
+  return {
+    type: types.REGISTER_ADMIN,
+    payload: request,
+  };
+}
+
 /**
  *
  * @param {*} dataToSubmit
