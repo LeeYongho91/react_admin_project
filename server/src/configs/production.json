@@ -1,6 +1,5 @@
 {
     "env": "production",
-    "mongoURI":"mongodb+srv://test:1234qwer@cluster0.zpvzz.mongodb.net/react-project?retryWrites=true&w=majority",
     "secretKey": "secretKey",
     "CLIENT_URL": "https://polar-wildwood-85222.herokuapp.com",
     "SERVER_URL": "https://polar-wildwood-85222.herokuapp.com"

@@ -9,7 +9,6 @@ function Container({ children }) {
   return (
     <div className="container">
       <ContainerChild>{children}</ContainerChild>
-      {children}
       {util.showLoading && <Spinner />}
     </div>
   );

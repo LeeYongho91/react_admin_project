@@ -1,14 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import LocalizationProvider from '@mui/lab/LocalizationProvider';
-import DatePicker from '@mui/lab/DatePicker';
-import TextField from '@mui/material/TextField';
+import Chart from './Sections/Chart';
 
 function DashboardContent() {
-  const [value, setValue] = useState(new Date());
-
   return (
     <Grid container spacing={3}>
       {/* Chart */}
@@ -18,24 +13,10 @@ function DashboardContent() {
             p: 2,
             display: 'flex',
             flexDirection: 'column',
-            height: 240,
+            height: 450,
           }}
         >
-          차트
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <DatePicker
-              views={['day']}
-              label="Just date"
-              inputFormat="yyyy-MM-dd"
-              value={value}
-              onChange={newValue => {
-                setValue(newValue);
-              }}
-              renderInput={params => (
-                <TextField {...params} helperText={null} />
-              )}
-            />
-          </LocalizationProvider>
+          <Chart />
         </Paper>
       </Grid>
       {/* Recent Deposits */}

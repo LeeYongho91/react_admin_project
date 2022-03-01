@@ -118,6 +118,21 @@ class ShopController {
       next(error);
     }
   };
+
+  /**
+   *
+   * @param req
+   * @param res
+   * @param next
+   */
+  public getWeekHistory = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const result = await this.shopService.getWeekHistory();
+      if (result['success']) res.json({ success: true, ...result });
+    } catch (error) {
+      next(error);
+    }
+  };
 }
 
 export default ShopController;

@@ -22,13 +22,13 @@ function App() {
 
   const AuthDashboardPage = Auth(Dashboard, null);
   const AuthLoginPage = Auth(LoginPage, false);
-  const AuthPaymentPage = Auth(Payment, true);
-  const AuthUserListPage = Auth(UserListPage, true);
-  const AuthUserRegisterPage = Auth(UserRegisterPage, true);
-  const AuthProductListPage = Auth(ProductListPage, true);
-  const AuthProductRegisterPage = Auth(ProductRegisterPage, true);
-  const AuthAdminListPage = Auth(AdminListPage, true);
-  const AuthAdminRegisterPage = Auth(AdminRegisterPage, true);
+  const AuthPaymentPage = Auth(Payment, null);
+  const AuthUserListPage = Auth(UserListPage, null);
+  const AuthUserRegisterPage = Auth(UserRegisterPage, null);
+  const AuthProductListPage = Auth(ProductListPage, null);
+  const AuthProductRegisterPage = Auth(ProductRegisterPage, null);
+  const AuthAdminListPage = Auth(AdminListPage, null);
+  const AuthAdminRegisterPage = Auth(AdminRegisterPage, null);
 
   return (
     <>

@@ -22,6 +22,7 @@ class ShopRoute implements Route {
     this.router.post(`${this.path}/review/add`, validationMiddleware(reviewDto, 'body'), authMiddleware, this.ShopController.reviewAdd);
     this.router.post(`${this.path}/history`, this.ShopController.history);
     this.router.post(`${this.path}/list`, this.ShopController.getProductList);
+    this.router.get(`${this.path}/history/week`, this.ShopController.getWeekHistory);
   }
 }
 

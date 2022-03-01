@@ -42,7 +42,6 @@ function ProductRegisterPage(props) {
 
     const body = {
       writer: props.user.userData._id,
-
       title: Title,
       description: Description,
       price: Price,

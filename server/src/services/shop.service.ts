@@ -4,6 +4,7 @@ import PaymentModel from '@/models/payment.model';
 import { uploadDto } from '@/dtos/shop.dto';
 import HttpException from '@/exceptions/HttpException';
 import { isEmpty } from '@/utils/util';
+import moment from 'moment';
 
 class ShopService {
   public Product = ProductModel;
@@ -271,6 +272,24 @@ class ShopService {
       const products = await this.Product.find(findDateArgs).skip(skip).limit(limit);
       return { success: true, products, productCount };
     }
+  }
+
+  /**
+   *
+   */
+  public async getWeekHistory() {
+    const history = await this.Payment.aggregate([
+      {
+        $match: {
+          createdAt: {
+            $gte: moment().startOf('week').toDate(),
+            $lt: moment().endOf('week').toDate(),
+          },
+        },
+      },
+    ]);
+    console.log(history);
+    return { success: true, history };
   }
 }
 
