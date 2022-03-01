@@ -287,7 +287,11 @@ class ShopService {
           },
         },
       },
+      { $unwind: { path: '$product' } },
+      { $group: { _id: { $dayOfWeek: '$createdAt' }, totalPrice: { $sum: '$product.price' } } },
+      { $sort: { _id: -1 } },
     ]);
+
     console.log(history);
     return { success: true, history };
   }

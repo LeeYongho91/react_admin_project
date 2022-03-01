@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import {
   Chart as ChartJS,
@@ -50,25 +50,26 @@ const dateSetting = todayDate => {
   return `${month}/${day}`;
 };
 result.push(dateSetting(today));
-for (let i = 0; i < 7; i++) {
+for (let i = 0; i < 6; i++) {
   today -= 86400000;
   result.push(dateSetting(today));
 }
+
 result.reverse();
 
 const labels = result;
 
 function Chart() {
   const dispatch = useDispatch();
+  const [price, setPrice] = useState([]);
 
   const data = {
     labels,
     datasets: [
       {
         label: '매출',
-        data: labels.map(() => [
-          10000, 20000, 30000, 40000, 50000, 60000, 70000,
-        ]),
+        // data: labels.map(() => [100, 300, 200, 300, 500, 100, 100]),
+        data: price,
         borderColor: 'rgb(53, 162, 235)',
         backgroundColor: 'rgba(53, 162, 235, 0.5)',
       },
@@ -79,13 +80,14 @@ function Chart() {
     try {
       dispatch(loadingToggleAction(true));
       const response = await axios.get(`${SHOP_SERVER}/history/week`);
-      console.log(response);
+      const newPrice = Array.from({ length: 7 }, () => 0);
 
-      // const test = [];
-
-      // for (const item of response.data) {
-
-      // }
+      for (let i = 0; i < response.data.history.length; i++) {
+        const totalPrice = response.data.history[i].totalPrice;
+        newPrice[newPrice.length - 1 - i] = totalPrice;
+      }
+      console.log(newPrice);
+      setPrice(newPrice);
 
       dispatch(loadingToggleAction(false));
     } catch (error) {
@@ -94,7 +96,9 @@ function Chart() {
   };
 
   useEffect(() => {
-    getWeekPayment();
+    if (price.length === 0) {
+      getWeekPayment();
+    }
   });
 
   return (
