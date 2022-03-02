@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React from 'react';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -11,9 +10,6 @@ import {
   Legend,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
-import { useDispatch } from 'react-redux';
-import { SHOP_SERVER } from '../../../Config';
-import { loadingToggleAction } from '../../../../_actions/util_actions';
 
 ChartJS.register(
   CategoryScale,
@@ -59,47 +55,18 @@ result.reverse();
 
 const labels = result;
 
-function Chart() {
-  const dispatch = useDispatch();
-  const [price, setPrice] = useState([]);
-
+function Chart({ price }) {
   const data = {
     labels,
     datasets: [
       {
         label: '매출',
-        // data: labels.map(() => [100, 300, 200, 300, 500, 100, 100]),
         data: price,
         borderColor: 'rgb(53, 162, 235)',
         backgroundColor: 'rgba(53, 162, 235, 0.5)',
       },
     ],
   };
-
-  const getWeekPayment = async () => {
-    try {
-      dispatch(loadingToggleAction(true));
-      const response = await axios.get(`${SHOP_SERVER}/history/week`);
-      const newPrice = Array.from({ length: 7 }, () => 0);
-
-      for (let i = 0; i < response.data.history.length; i++) {
-        const totalPrice = response.data.history[i].totalPrice;
-        newPrice[newPrice.length - 1 - i] = totalPrice;
-      }
-      console.log(newPrice);
-      setPrice(newPrice);
-
-      dispatch(loadingToggleAction(false));
-    } catch (error) {
-      console.log(error.response.data);
-    }
-  };
-
-  useEffect(() => {
-    if (price.length === 0) {
-      getWeekPayment();
-    }
-  });
 
   return (
     <div>

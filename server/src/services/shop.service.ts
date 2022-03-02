@@ -278,22 +278,30 @@ class ShopService {
    *
    */
   public async getWeekHistory() {
+    const today = moment();
+
     const history = await this.Payment.aggregate([
       {
         $match: {
           createdAt: {
-            $gte: moment().startOf('week').toDate(),
-            $lt: moment().endOf('week').toDate(),
+            $gte: new Date(moment().subtract(7, 'days').format()),
+            $lt: new Date(today.format()),
           },
         },
       },
       { $unwind: { path: '$product' } },
-      { $group: { _id: { $dayOfWeek: '$createdAt' }, totalPrice: { $sum: '$product.price' } } },
-      { $sort: { _id: -1 } },
+      { $group: { _id: { month_day: { $substrCP: ['$createdAt', 0, 10] } }, totalPrice: { $sum: '$product.price' } } },
+      { $sort: { '_id.month_day': -1 } },
     ]);
 
-    console.log(history);
-    return { success: true, history };
+    const recentHistory = await this.Payment.find({}).limit(5).sort({ createdAt: -1 });
+
+    let recentSum = 0;
+    history.forEach((el) => {
+      recentSum += el.totalPrice;
+    });
+
+    return { success: true, history, recentHistory, recentSum };
   }
 }
 
