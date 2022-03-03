@@ -76,8 +76,8 @@ function FileUpload(props) {
           <div onClick={() => deleteHandler(image)} key={index}>
             <img
               style={{ minWidth: '300px', width: '300px', height: '240px' }}
-              alt="test"
-              src={`http://localhost:5000/${image}`}
+              alt={image}
+              src={`${process.env.REACT_APP_API_URL}/${image}`}
             />
           </div>
         ))}
